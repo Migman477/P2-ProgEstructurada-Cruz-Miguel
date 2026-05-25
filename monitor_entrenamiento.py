@@ -130,3 +130,57 @@ def analizar_resultados(historial_loss, latencias):
         print("Datos insuficientes para realizar un análisis estadístico válido.\n")
         return 0.0
 
+def interaccion_so(media_loss):
+    """Interactúa con el sistema operativo usando sys."""
+    print("--- Interacción con el Sistema ---")
+    
+    # 1. Mostrar información sobre la plataforma o sistema
+    print(f"Plataforma del sistema (Atributo): {sys.platform}")
+    
+    # 2. Verificar la versión de Python
+    print(f"Versión de Python (Atributo): {sys.version.split()[0]}")
+    
+    # Llamadas a funciones adicionales de sys para cumplir el requisito de funciones
+    print(f"Codificación del sistema de archivos (Función): {sys.getfilesystemencoding()}")
+    tamanio_variable = sys.getsizeof(media_loss)
+    print(f"Tamaño en memoria de la variable de pérdida (Función): {tamanio_variable} bytes")
+    
+    limite_tolerancia_loss = 1.6
+    
+    # 3. Forzar una salida limpia si las métricas son críticas
+    if media_loss > limite_tolerancia_loss:
+        print(f"ALERTA CRÍTICA: La pérdida ({media_loss:.4f}) superó el límite de {limite_tolerancia_loss}.")
+        print("Forzando salida limpia del programa...")
+        sys.exit(1)
+    else:
+        print(f"Entrenamiento completado dentro de los límites estables ({media_loss:.4f} <= {limite_tolerancia_loss}).")
+        sys.exit(0)
+
+def main():
+    print("="*60)
+    print("MONITOR DE ENTRENAMIENTO DE IA (SIMULACIÓN)")
+    print("="*60 + "\n")
+    
+    # Secciones correspondientes a cada biblioteca
+    gestionar_tiempo()
+    
+    errores_de_prueba = [-1.5, 0.8, -0.2, 2.1, -0.9, 0.5]
+    estimacion_epochs = 10.4
+    
+    # math
+    _, epochs = calcular_metricas_error(errores_de_prueba, estimacion_epochs)
+    
+    if epochs <= 0:
+        epochs = 1
+        
+    # random
+    historial_loss, latencias = simular_entrenamiento(epochs)
+    
+    # statistics
+    media_loss = analizar_resultados(historial_loss, latencias)
+    
+    # sys
+    interaccion_so(media_loss)
+
+if __name__ == "__main__":
+    main()
