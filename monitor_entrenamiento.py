@@ -223,25 +223,74 @@ def main():
     # 1. Ejecución de telemetría inicial
     gestionar_tiempo()
     
-    # Datos semilla
-    errores_de_prueba = [-1.5, 0.8, -0.2, 2.1, -0.9, 0.5]
+    # 2. Definición de parámetros
     estimacion_epochs = 10.4
+    epochs_entero = math.ceil(estimacion_epochs)
     
-    # 2. Cálculos estáticos
-    _, epochs = calcular_metricas_error(errores_de_prueba, estimacion_epochs)
+    # 3. Ciclos de simulación estocástica
+    historial_loss, latencias = simular_entrenamiento(epochs_entero)
     
-    # Flujo limpio: Asegurar que los epochs sean positivos
-    if epochs <= 0:
-        epochs = 1
-        
-    # 3. Ciclos de simulación
-    historial_loss, latencias = simular_entrenamiento(epochs)
+    # 4. Cálculos matemáticos (Conectando datos simulados al cálculo de error)
+    calcular_metricas_error(historial_loss, estimacion_epochs)
     
-    # 4. Análisis de resultados generados
+    # 5. Análisis de resultados generados
     media_loss = analizar_resultados(historial_loss, latencias)
     
-    # 5. Cierre y reporte del sistema
+    # 6. Cierre y reporte del sistema
     interaccion_so(media_loss)
 
 if __name__ == "__main__":
     main()
+
+"""
+--- RESPUESTAS A LAS PREGUNTAS TEÓRICAS ---
+
+1. Uso de Objetos y Métodos: 
+
+Al usar 'datetime.datetime.now()', el primer 'datetime' es el módulo o biblioteca externa importada.
+El segundo 'datetime' es la clase definida dentro de ese módulo,
+ y 'now()' es un método específico de dicha clase que retorna un objeto instanciado
+con la fecha y hora actual. Esto ilustra cómo las bibliotecas externas nos proveen
+de clases y métodos (código encapsulado) listos para usar en nuestro programa
+sin necesidad de desarrollar la funcionalidad desde cero.
+
+2. Diferenciación Técnica: 
+
+Al importar el módulo completo (ej: 'import math'), cargamos todo su espacio de nombres
+(namespace). Por ello, para usar una función debemos prefijarla con el nombre del módulo
+y un punto (ej: 'math.sqrt(x)'). Por otro lado, al importar un método específico
+(ej: 'from math import sqrt'), traemos esa función directamente a nuestro espacio de
+nombres local, lo que nos permite invocarla directamente como 'sqrt(x)' sin el prefijo
+del módulo.
+
+3. Flujo y Lógica:
+
+Para conectar los datos, primero definimos la estimación de epochs y ejecutamos
+'simular_entrenamiento()', la cual genera iterativamente los valores aleatorios
+y los guarda en una lista llamada 'historial_loss'. Inmediatamente después, esta
+lista generada dinámicamente se pasa como argumento ('lista_errores_crudos') a
+la función 'calcular_metricas_error()'. Allí se itera la lista, se eleva cada
+diferencia de error al cuadrado mediante 'math.pow', se promedian, y finalmente
+se le aplica 'math.sqrt' para obtener el RMSE de la simulación real generada en
+el paso previo.
+
+4. Mapeo de Tipos de Datos: 
+
+Utilicé el tipo de dato complejo "Lista" (list) para almacenar el 'historial_loss'
+y las 'latencias'. Elegí esta estructura de colección secuencial en lugar de variables
+simples porque el entrenamiento produce múltiples valores (uno por iteración) que
+necesitan agruparse y retenerse en la memoria de manera conjunta. Si hubiese usado
+una variable simple, su valor se sobrescribiría en cada ciclo y sería imposible
+realizar análisis globales posteriores (como medias o desviaciones estándar) sobre el
+conjunto de datos completo.
+
+5. Autoevaluación de Abstracción: 
+
+Al utilizar 'statistics.stdev()' para obtener la desviación estándar,
+NO tuve que programar la fórmula matemática (que implica calcular promedios,
+diferencias al cuadrado, sumatorias y raíces). Esto es el ejemplo perfecto de
+"Abstracción": la biblioteca oculta la complejidad interna de su implementación
+y expone únicamente una interfaz sencilla y declarativa (el nombre de la función).
+Como programador, solo me concentré en "qué" quería hacer (obtener la desviación)
+y no en "cómo" se calcula matemáticamente por dentro.
+"""
