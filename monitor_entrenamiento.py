@@ -106,3 +106,27 @@ def simular_entrenamiento(epochs):
     print()
     return historial_loss, latencias
 
+def analizar_resultados(historial_loss, latencias):
+    """Analiza estadísticamente el rendimiento del entrenamiento usando statistics."""
+    print("--- Análisis de Rendimiento ---")
+    
+    # Validaciones if/else para no lanzar excepciones con listas vacías o con 1 solo elemento en stdev
+    if len(historial_loss) > 1 and len(latencias) > 0:
+        # 1. Calcular la media de los valores de pérdida
+        media_loss = statistics.mean(historial_loss)
+        
+        # 2. Calcular la desviación estándar para medir la estabilidad
+        desviacion_loss = statistics.stdev(historial_loss)
+        
+        # 3. Obtener la mediana de la latencia del proceso
+        mediana_latencia = statistics.median(latencias)
+        
+        print(f"Media de pérdida (Loss): {media_loss:.4f}")
+        print(f"Desviación estándar de la pérdida (Estabilidad): {desviacion_loss:.4f}")
+        print(f"Mediana de latencia: {mediana_latencia:.2f} ms\n")
+        
+        return media_loss
+    else:
+        print("Datos insuficientes para realizar un análisis estadístico válido.\n")
+        return 0.0
+
