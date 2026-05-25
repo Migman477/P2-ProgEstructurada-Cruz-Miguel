@@ -67,3 +67,42 @@ def calcular_metricas_error(lista_errores_crudos, epochs_flotante):
     
     return rmse, epochs_totales
 
+def simular_entrenamiento(epochs):
+    """Simula los valores estocásticos de las iteraciones usando random."""
+    print("--- Simulación Estocástica ---")
+    
+    # Lista de strings de eventos
+    eventos_log = [
+        "Epoch exitoso",
+        "Gradiente inestable",
+        "Actualización de pesos",
+        "Tasa de aprendizaje ajustada"
+    ]
+    
+    historial_loss = []
+    latencias = []
+    
+    for epoch in range(1, epochs + 1):
+        # 1. Generar la fluctuación del error de pérdida (loss) con decimales aleatorios
+        loss_actual = random.uniform(0.1, 2.8)
+        historial_loss.append(loss_actual)
+        
+        # Generar latencia aleatoria en milisegundos
+        latencia_ms = random.uniform(20.0, 150.0)
+        latencias.append(latencia_ms)
+        
+        # 2. Simular la probabilidad de éxito de una iteración
+        probabilidad_exito = random.random()
+        estado = "Exitoso"
+        # Si la probabilidad es menor a 0.20 (20%), falla la iteración
+        if probabilidad_exito < 0.20:
+            estado = "Advertencia de Rendimiento"
+            
+        # 3. Seleccionar de manera aleatoria un evento de log
+        evento_seleccionado = random.choice(eventos_log)
+        
+        print(f"Epoch {epoch}/{epochs} | Loss: {loss_actual:.4f} | Estado: {estado} | Log: '{evento_seleccionado}'")
+        
+    print()
+    return historial_loss, latencias
+
